@@ -99,14 +99,17 @@ The screen shows RAW infrared signal capture. Since no protocol was auto-detecte
 
 ### 2. Saved Remote Profiles
 Captured remotes are stored under a structured naming convention for easy navigation.
+
 ![Saved Remotes](demo/saved_remotes.png)
 
 ### 3. Device Control Interface (Samsung TV Example)
 Demonstrates directional navigation and power control using captured IR signals.
+
 ![TV Control](demo/tv_control.png)
 
 ### 4. Protocol Detection (NEC Example)
 Some devices exposed protocol-level decoding (NEC), displaying address and command values.
+
 ![Protocol Detection](demo/protocol.png)
 
 ---
