@@ -2,7 +2,15 @@ import os
 import unittest
 
 class TestIRData(unittest.TestCase):
+    """Test suite for validating IR signal capture data files."""
+
     def get_ir_files(self):
+        """
+        Recursively collect all .ir files from the IR captures directory.
+
+        Returns:
+            list: A list of file paths to .ir files.
+        """
         ir_files = []
         ir_dir = 'data/ir_captures'
         for root, dirs, files in os.walk(ir_dir):
@@ -12,6 +20,9 @@ class TestIRData(unittest.TestCase):
         return ir_files
 
     def test_raw_data_is_integers(self):
+        """
+        Verify that all signals of type 'raw' contain only integer values in their data field.
+        """
         files = self.get_ir_files()
         self.assertTrue(len(files) > 0, "No .ir files found")
 
