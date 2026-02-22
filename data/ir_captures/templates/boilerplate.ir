@@ -1,0 +1,34 @@
+Filetype: IR signals file
+Version: 1
+#
+# ==============================================================================
+# BOILERPLATE IR CAPTURE FILE
+# ==============================================================================
+# Use this file as a template for adding new devices.
+# 1. Copy this file to data/ir_captures/ following the naming convention:
+#    grvroom_<device>_<brand>.ir (e.g., grvroom_tv_sony.ir)
+# 2. Fill in the signal blocks below. You can have multiple signals in one file.
+# 3. Use 'type: parsed' if the protocol is known (e.g., NEC, Samsung).
+# 4. Use 'type: raw' if the protocol is unknown.
+# ==============================================================================
+
+# Example 1: Parsed Signal (Preferred)
+# Protocol: Specific IR protocol (e.g., NEC, Samsung32, RC5, Sony12)
+# Address: Device address in hex (space-separated bytes)
+# Command: Button command in hex (space-separated bytes)
+name: Power_On
+type: parsed
+protocol: NEC
+address: 00 EF 00 00
+command: 03 FC 00 00
+
+# Example 2: Raw Signal (Fallback)
+# Frequency: Carrier frequency in Hz (usually 38000)
+# Duty Cycle: IR LED duty cycle (usually 0.33)
+# Data: Space-separated integer timings in microseconds
+#       (Mark Space Mark Space ...)
+name: Volume_Up
+type: raw
+frequency: 38000
+duty_cycle: 0.330000
+data: 9000 4500 560 560 560 1690 560 1690 560 560 560 560 560 560 560 560 560 560 560 1690 560 1690 560 560 560 560 560 560 560 560 560 560 560 560 560 1690 560 560 560 560 560 560 560 560 560 560 560 560 560 560 560 1690 560 1690 560 1690 560 1690 560 1690 560 1690 560 1690 560 1690

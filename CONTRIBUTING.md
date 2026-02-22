@@ -50,6 +50,14 @@ Examples:
 - `grvroom_ac_daikin.ir`
 - `grvroom_fan_dyson.ir`
 
+### Using the Boilerplate
+To make adding new devices easier, we provide a template file:
+`data/ir_captures/templates/boilerplate.ir`
+
+1.  **Copy**: Copy this file to `data/ir_captures/`.
+2.  **Rename**: Rename it following the convention (e.g., `grvroom_projector_nec.ir`).
+3.  **Edit**: Open the file and fill in the signal details. The template includes examples for both parsed and raw signals.
+
 ---
 
 ## 🧪 Testing & Validation
@@ -63,6 +71,8 @@ python3 tests/validate_ir_data.py
 This script checks for:
 - Valid file extensions (.ir).
 - Integrity of RAW data fields (integers only).
+- Correct formatting of Parsed signal fields (Hex strings).
+- Adherence to file naming conventions (`grvroom_<device>_<brand>.ir`).
 - Basic file structure.
 
 ---
