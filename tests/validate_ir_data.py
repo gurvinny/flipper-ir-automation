@@ -1,5 +1,6 @@
 import os
 import unittest
+import re
 
 class TestIRData(unittest.TestCase):
     """
@@ -29,6 +30,24 @@ class TestIRData(unittest.TestCase):
                 if file.endswith('.ir'):
                     ir_files.append(os.path.join(root, file))
         return ir_files
+
+    def test_filename_convention(self):
+        """
+        Verifies that IR files follow the naming convention: grvroom_<device>_<brand>.ir
+        This convention applies to files outside the 'templates' directory.
+        """
+        files = self.get_ir_files()
+        pattern = re.compile(r'^grvroom_[a-z]+_[a-z]+\.ir$')
+
+        for filepath in files:
+            # Skip templates directory
+            if 'templates' in filepath:
+                continue
+
+            filename = os.path.basename(filepath)
+            with self.subTest(filepath=filepath):
+                self.assertTrue(pattern.match(filename),
+                                f"File '{filename}' does not match naming convention 'grvroom_<device>_<brand>.ir'")
 
     def test_raw_data_is_integers(self):
         """
@@ -71,9 +90,31 @@ class TestIRData(unittest.TestCase):
                                         int(val)
                                     except ValueError:
                                         self.fail(f"Non-integer value '{val}' found in data field at line {i+1} in {filepath}")
-                        # If it's not raw, we don't strictly require data: to be integers,
-                        # but usually parsed signals don't have a 'data:' field,
-                        # they have 'address:' and 'command:'.
+
+    def test_parsed_data_is_hex(self):
+        """
+        Verifies that signals of type 'parsed' have valid hex strings for address and command fields.
+        Expected format: Space-separated 2-digit hex values (e.g., '07 00 00 00').
+        """
+        files = self.get_ir_files()
+        # Matches pairs of hex digits separated by spaces
+        hex_pattern = re.compile(r'^([0-9A-Fa-f]{2})( [0-9A-Fa-f]{2})*$')
+
+        for filepath in files:
+            with self.subTest(filepath=filepath):
+                with open(filepath, 'r') as f:
+                    is_parsed = False
+                    for i, line in enumerate(f):
+                        line = line.strip()
+                        if line.startswith('type: parsed'):
+                            is_parsed = True
+                        elif line.startswith('type: raw'):
+                            is_parsed = False
+
+                        if is_parsed and (line.startswith('address:') or line.startswith('command:')):
+                            content = line.split(':', 1)[1].strip()
+                            self.assertTrue(hex_pattern.match(content),
+                                            f"Invalid hex format in {filepath} line {i+1}: '{content}'")
 
 if __name__ == '__main__':
     unittest.main()

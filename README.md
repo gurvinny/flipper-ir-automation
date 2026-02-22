@@ -158,6 +158,14 @@ This project emphasizes a **security-conscious experimentation mindset**.
 
 ---
 
+## 🤝 Contributing
+
+We welcome contributions! Whether you're adding new device signals or improving documentation, please check out our [Contributing Guide](CONTRIBUTING.md).
+
+We provide a **Boilerplate Template** (`data/ir_captures/templates/boilerplate.ir`) to make adding new devices easy.
+
+---
+
 ## 🚀 Getting Started
 
 To use the captured IR signals:
