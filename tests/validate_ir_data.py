@@ -2,14 +2,25 @@ import os
 import unittest
 
 class TestIRData(unittest.TestCase):
-    """Test suite for validating IR signal capture data files."""
+    """
+    Test suite for validating the integrity and format of IR signal capture data files.
+
+    This class provides a set of unit tests to ensure that all .ir files within the
+    `data/ir_captures` directory adhere to the expected structure and content requirements.
+    It verifies file existence and validates the format of raw data fields to prevent
+    issues during playback on the Flipper Zero device.
+    """
 
     def get_ir_files(self):
         """
-        Recursively collect all .ir files from the IR captures directory.
+        Recursively collects all .ir files from the project's IR captures directory.
+
+        This helper method traverses the `data/ir_captures` directory tree to find
+        all files with the `.ir` extension, which contain the infrared signal data.
 
         Returns:
-            list: A list of file paths to .ir files.
+            list: A list of absolute or relative file paths (strings) pointing to
+                  each found .ir file.
         """
         ir_files = []
         ir_dir = 'data/ir_captures'
@@ -21,7 +32,19 @@ class TestIRData(unittest.TestCase):
 
     def test_raw_data_is_integers(self):
         """
-        Verify that all signals of type 'raw' contain only integer values in their data field.
+        Verifies that all signals of type 'raw' contain strictly integer values in their data field.
+
+        This test iterates through every found .ir file and parses its content.
+        For sections identified as `type: raw`, it checks the `data:` field to ensure:
+        1.  The field is not empty.
+        2.  Every value in the space-separated list is a valid integer.
+
+        This validation is crucial because the Flipper Zero expects raw timing data
+        (in microseconds) to be numeric. Non-integer values will cause playback failure.
+
+        Raises:
+            AssertionError: If no .ir files are found, if a data field is empty,
+                            or if a non-integer value is encountered in a raw data block.
         """
         files = self.get_ir_files()
         self.assertTrue(len(files) > 0, "No .ir files found")
