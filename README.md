@@ -3,6 +3,7 @@
 ![Status](https://img.shields.io/badge/Status-Active-brightgreen)
 ![Device](https://img.shields.io/badge/Device-Flipper%20Zero-orange)
 ![License](https://img.shields.io/badge/License-MIT-blue)
+![Security Policy](https://img.shields.io/badge/Security-Policy-brightgreen)
 
 ## 📌 Project Overview
 
@@ -133,7 +134,7 @@ Some devices exposed protocol-level decoding (NEC), displaying address and comma
 
 ## 🔐 Security & Ethics
 
-This project emphasizes a **security-conscious experimentation mindset**.
+This project emphasizes a **security-conscious experimentation mindset**. For more details on how to report security vulnerabilities, please see our [Security Policy](SECURITY.md).
 
 - **Authorized Environment**: All devices used are personally owned and located within a controlled environment (my room).
 - **Controlled Signal Capture**: Signals were captured only from authorized remotes.
