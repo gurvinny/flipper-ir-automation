@@ -91,14 +91,16 @@ class TestIRData(unittest.TestCase):
                                     except ValueError:
                                         self.fail(f"Non-integer value '{val}' found in data field at line {i+1} in {filepath}")
 
-    def test_parsed_data_is_hex(self):
+    def test_parsed_data_fields(self):
         """
-        Verifies that signals of type 'parsed' have valid hex strings for address and command fields.
-        Expected format: Space-separated 2-digit hex values (e.g., '07 00 00 00').
+        Verifies that signals of type 'parsed' have valid protocol, address, and command fields.
+        - Protocol: Alphanumeric string.
+        - Address/Command: Space-separated 2-digit hex values.
         """
         files = self.get_ir_files()
         # Matches pairs of hex digits separated by spaces
         hex_pattern = re.compile(r'^([0-9A-Fa-f]{2})( [0-9A-Fa-f]{2})*$')
+        protocol_pattern = re.compile(r'^[a-zA-Z0-9]+$')
 
         for filepath in files:
             with self.subTest(filepath=filepath):
@@ -111,10 +113,15 @@ class TestIRData(unittest.TestCase):
                         elif line.startswith('type: raw'):
                             is_parsed = False
 
-                        if is_parsed and (line.startswith('address:') or line.startswith('command:')):
-                            content = line.split(':', 1)[1].strip()
-                            self.assertTrue(hex_pattern.match(content),
-                                            f"Invalid hex format in {filepath} line {i+1}: '{content}'")
+                        if is_parsed:
+                            if line.startswith('protocol:'):
+                                content = line.split(':', 1)[1].strip()
+                                self.assertTrue(protocol_pattern.match(content),
+                                                f"Invalid protocol format in {filepath} line {i+1}: '{content}'")
+                            elif line.startswith('address:') or line.startswith('command:'):
+                                content = line.split(':', 1)[1].strip()
+                                self.assertTrue(hex_pattern.match(content),
+                                                f"Invalid hex format in {filepath} line {i+1}: '{content}'")
 
 if __name__ == '__main__':
     unittest.main()
