@@ -91,6 +91,20 @@ class TestIRData(unittest.TestCase):
                                     except ValueError:
                                         self.fail(f"Non-integer value '{val}' found in data field at line {i+1} in {filepath}")
 
+    def test_hex_pattern_redos(self):
+        """
+        Verifies that the hex_pattern regular expression is not vulnerable to
+        Regular Expression Denial of Service (ReDoS) via catastrophic backtracking.
+        """
+        hex_pattern = re.compile(r'^([0-9A-Fa-f]{2}(?: [0-9A-Fa-f]{2})*)$')
+        import time
+        start = time.time()
+        # Malicious payload: long string of valid parts followed by an invalid part
+        payload = "00" + " 00" * 50000 + " a"
+        hex_pattern.match(payload)
+        duration = time.time() - start
+        self.assertLess(duration, 0.5, "ReDoS detected: Hex regex evaluation took too long.")
+
     def test_parsed_data_fields(self):
         """
         Verifies that signals of type 'parsed' have valid protocol, address, and command fields.
@@ -99,7 +113,7 @@ class TestIRData(unittest.TestCase):
         """
         files = self.get_ir_files()
         # Matches pairs of hex digits separated by spaces
-        hex_pattern = re.compile(r'^([0-9A-Fa-f]{2})( [0-9A-Fa-f]{2})*$')
+        hex_pattern = re.compile(r'^([0-9A-Fa-f]{2}(?: [0-9A-Fa-f]{2})*)$')
         protocol_pattern = re.compile(r'^[a-zA-Z0-9]+$')
 
         for filepath in files:
