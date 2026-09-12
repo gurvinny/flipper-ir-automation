@@ -191,3 +191,11 @@ To use the captured IR signals:
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 Copyright (c) 2026 Gurvin Singh
+
+---
+
+## Contributions
+
+This repository is published as a record of completed work, not as a collaborative project.
+Issues are disabled and pull requests are not reviewed or merged. Corrections, broken links and
+security concerns are welcome — see [SECURITY.md](SECURITY.md) for how to report them.
