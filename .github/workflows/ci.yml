@@ -1,0 +1,61 @@
+# Flipper IR automation CI
+# Author: gurvinny
+#
+# This repo had no workflows at all, so tests/ had never been executed by
+# anything. Worse, the file was named validate_ir_data.py, which matches
+# neither of pytest's discovery patterns (test_*.py / *_test.py) -- running
+# pytest reported "no tests ran" and exited 0. A suite that collects nothing
+# looks exactly like a suite that passes.
+#
+# The file is now test_validate_ir_data.py, and the collection count is
+# asserted below so it cannot silently drop to zero again.
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+# Least privilege: this workflow only reads the repository.
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Validate IR data
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install pytest
+        run: pip install pytest
+
+      - name: Syntax check the capture helper
+        run: find . -name "*.py" -not -path "./.git/*" -exec python -m py_compile {} +
+
+      - name: Run the IR data validation tests
+        run: pytest tests/ -v
+
+      # Guards the failure this repo already had: zero collected tests is not
+      # a pass. Asserting a floor means a rename or a moved directory fails
+      # loudly instead of reporting green on nothing.
+      - name: Assert tests were actually collected
+        run: |
+          count=$(pytest tests/ --collect-only -q 2>/dev/null | grep -c '::' || true)
+          echo "collected $count test(s)"
+          if [ "$count" -lt 3 ]; then
+              echo "::error::expected at least 3 tests, collected $count"
+              exit 1
+          fi

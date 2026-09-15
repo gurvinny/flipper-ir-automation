@@ -1,0 +1,14 @@
+# Automated dependency updates
+# Author: gurvinny
+#
+# Only github-actions applies. This repo ships .ir capture files and a single
+# stdlib-only validation script -- there is no manifest to track, and adding a
+# pip ecosystem here would imply coverage that does not exist.
+version: 2
+
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3
